@@ -1,105 +1,77 @@
 # Scalable REST API with Authentication & Role-Based Access
 
 A production-ready FastAPI application with JWT authentication, role-based access control, and a React frontend.
-
-## 🚀 Features
-
-### Backend (FastAPI)
-- ✅ **User Authentication** - JWT-based authentication with secure password hashing
-- ✅ **Role-Based Access Control** - Three roles: Admin, Manager, User
-- ✅ **User Management** - Registration, login, profile management
-- ✅ **Product CRUD** - Complete Create, Read, Update, Delete operations
-- ✅ **API Versioning** - All endpoints under `/api/v1/`
-- ✅ **Input Validation** - Pydantic models with comprehensive validation
-- ✅ **Error Handling** - Global exception handlers with proper HTTP status codes
-- ✅ **API Documentation** - Auto-generated Swagger UI and ReDoc
-- ✅ **Database Integration** - SQLAlchemy ORM with PostgreSQL support
-- ✅ **CORS Support** - Cross-Origin Resource Sharing enabled
-
-### Frontend (React)
 - ✅ **Modern UI** - Clean, responsive React application
-- ✅ **User Authentication** - Register and login with JWT token management
-- ✅ **Protected Routes** - Route protection with automatic redirect
 - ✅ **Product Management** - Full CRUD interface for products
-- ✅ **Search & Filter** - Search products by name/description, filter by category
-- ✅ **Toast Notifications** - Success/error feedback for all operations
-- ✅ **Loading States** - Spinner indicators during API calls
-
-## 📋 Prerequisites
-
-- Python 3.8+
-- Node.js 16+
-- PostgreSQL database
-- pip (Python package manager)
-- npm or yarn
 
 ## 🛠️ Installation
 
 ### Option A: Docker (Recommended) 🐳
 
-**Easiest way to get started - runs everything in containers:**
+Run everything in containers (database, backend, frontend):
 
 ```bash
-# 1. Build and start all services (backend, frontend, database)
+# From project root
 docker-compose up -d --build
-
-# 2. Access the application
-# Frontend: http://localhost:3000
-# Backend API: http://localhost:8000
-# API Docs: http://localhost:8000/api/docs
-
-# 3. View logs
-docker-compose logs -f
-
-# 4. Stop all services
-docker-compose down
 ```
 
-**What's included:**
-- ✅ PostgreSQL database (port 5432)
-- ✅ FastAPI backend (port 8000)
-- ✅ React frontend (port 3000)
-- ✅ All dependencies installed
-- ✅ Auto-restart on failure
-- ✅ Hot-reload for development
+Access the services after startup:
 
-See **[DOCKER_GUIDE.md](DOCKER_GUIDE.md)** for complete Docker documentation.
+- Frontend: http://localhost:3000
+- Backend API: http://localhost:8000
+- API Docs: http://localhost:8000/api/docs
 
-### Option B: Manual Setup (Development)
-
-#### 1. Clone or Download the Project
+View logs or stop services:
 
 ```bash
-cd Assignment1
+docker-compose logs -f        # stream logs
+docker-compose down          # stop and remove containers
+docker-compose down -v       # also remove volumes (data)
 ```
 
-#### 2. Setup Backend
+The compose stack includes:
 
-**Install Python dependencies:**
+- PostgreSQL (port 5432)
+- FastAPI backend (port 8000)
+- React frontend served by nginx (port 3000)
+
+
+### Option B: Manual (Development)
+
+Run backend and frontend on your host for fast development:
+
+Backend (Python venv):
 
 ```bash
-# Create virtual environment (optional but recommended)
-python -m venv venv
-.\venv\Scripts\Activate.ps1  # Windows
-# source venv/bin/activate   # Linux/Mac
-
-# Install dependencies
+cd F:\\college\\projects\\Assignment1
+.\\venv\\Scripts\\Activate.ps1   # Windows PowerShell
+# or: source venv/bin/activate  # Linux/Mac
 pip install -r requirements.txt
-```
-
-**Setup database:**
-
-```bash
-# Make sure PostgreSQL is running
-# Update DATABASE_URL in app/config.py or create .env file
-```
-
-**Run backend:**
-
-```bash
 uvicorn app.main:app --reload
 ```
 
+Frontend (Vite dev server):
+
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+Frontend will run at `http://localhost:3000` and proxy requests to the backend at `http://localhost:8000` (CORS is enabled in the backend).
+
+### Option C: Hybrid (Backend in Docker, Frontend local)
+
+```bash
+# Start DB + backend only
+
+
+# In another terminal, run frontend locally
+cd frontend
+npm run dev
+```
+
+This is convenient for frontend development while keeping the backend environment consistent.
 Backend will be at http://localhost:8000
 
 #### 3. Setup Frontend
@@ -131,18 +103,6 @@ docker-compose up -d postgres backend
 cd frontend
 npm run dev
 ```
-python create_backend.py
-```
-
-This will create:
-- `app/` directory with all backend modules
-- `app/main.py` - FastAPI application entry point
-- `app/models.py` - Database models (User, Product)
-- `app/schemas.py` - Pydantic schemas for validation
-- `app/auth.py` - Authentication and authorization logic
-- `app/config.py` - Application configuration
-- `app/database.py` - Database connection setup
-- `app/routers/` - API route handlers (auth, users, products)
 
 #### 3. Install Dependencies
 
@@ -195,7 +155,6 @@ The API will be available at: `http://localhost:8000`
 Once the server is running, access the interactive API documentation:
 
 - **Swagger UI**: http://localhost:8000/api/docs
-- **ReDoc**: http://localhost:8000/api/redoc
 
 ## 🎨 Frontend Testing Interface
 
@@ -320,84 +279,4 @@ curl -X POST "http://localhost:8000/api/v1/products/" \
   }'
 ```
 
-## 🧪 Testing
 
-### Manual Testing
-1. Use the provided `frontend.html` interface
-2. Use the Swagger UI at `/api/docs`
-3. Use curl commands or Postman
-
-### Automated Testing (Optional)
-Create a `tests/` directory and add pytest tests:
-
-```bash
-pip install pytest pytest-asyncio httpx
-pytest
-```
-
-## 📁 Project Structure
-
-```
-Assignment1/
-├── app/
-│   ├── __init__.py
-│   ├── main.py              # FastAPI app initialization
-│   ├── config.py            # Configuration settings
-│   ├── database.py          # Database connection
-│   ├── models.py            # SQLAlchemy models
-│   ├── schemas.py           # Pydantic schemas
-│   ├── auth.py              # Authentication logic
-│   └── routers/
-│       ├── __init__.py
-│       ├── auth.py          # Auth endpoints
-│       ├── users.py         # User endpoints
-│       └── products.py      # Product endpoints
-├── frontend.html            # Testing UI
-├── requirements.txt         # Python dependencies
-├── .env.example            # Environment variables template
-├── .gitignore              # Git ignore file
-├── create_backend.py       # Setup script
-└── README.md               # This file
-```
-
-## 🚧 Troubleshooting
-
-### Database Connection Issues
-- Ensure PostgreSQL is running
-- Verify database credentials in `.env`
-- Check if the database exists
-
-### Token Errors
-- Ensure you're logged in and have a valid token
-- Check token expiration (default: 30 minutes)
-- Clear browser localStorage if needed
-
-### CORS Errors
-- Verify CORS middleware is enabled in `main.py`
-- Check that frontend is accessing correct API URL
-
-## 🔄 Future Enhancements
-
-- [ ] Password reset functionality
-- [ ] Email verification
-- [ ] Rate limiting
-- [ ] API key authentication
-- [ ] Pagination for list endpoints
-- [ ] Advanced filtering and search
-- [ ] File upload for product images
-- [ ] WebSocket support for real-time updates
-
-## 📄 License
-
-This project is for educational purposes.
-
-## 👨‍💻 Author
-
-Created as part of Assignment 1 - Scalable REST API Development
-
-## 📞 Support
-
-For issues or questions:
-1. Check the API documentation at `/api/docs`
-2. Review error messages in the response
-3. Check server logs for detailed error information
